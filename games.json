@@ -1,11 +1,27 @@
 JSON
 [
   {
-    "title": "Example Game 1",
-    "url": "https://www.game-iframe-url.com"
+    "title": "2048",
+    "url": "https://play2048.co/",
+    "category": "Puzzle",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/2048_logo.svg"
   },
   {
-    "title": "Example Game 2",
-    "url": "https://www.another-game-link.com"
+    "title": "Flappy Bird",
+    "url": "https://wayou.github.io/FlappyBird/",
+    "category": "Action",
+    "image": "https://vignette.wikia.nocookie.net/flappybird/images/d/d4/Icon.png"
+  },
+  {
+    "title": "Hextris",
+    "url": "https://hextris.io/",
+    "category": "Puzzle",
+    "image": "https://hextris.io/images/icon.png"
+  },
+  {
+    "title": "Minecraft Classic",
+    "url": "https://classic.minecraft.net/",
+    "category": "Adventure",
+    "image": "https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/apple-icon-120x120.png"
   }
 ]

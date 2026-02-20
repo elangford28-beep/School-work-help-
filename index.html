@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Portal</title>
+    <style>
+        body { background: #121212; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
+        header { text-align: center; padding: 30px 20px; background: #1a1a1a; }
+        .search-row { display: flex; justify-content: center; gap: 10px; margin: 15px auto; max-width: 500px; padding: 0 20px; }
+        #game-search { flex-grow: 1; padding: 12px; border-radius: 25px; border: 1px solid #444; background: #222; color: white; outline: none; font-size: 16px; }
+        #random-btn { background: #6f42c1; color: white; border: none; border-radius: 25px; padding: 0 20px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        #random-btn:hover { background: #5a32a3; transform: scale(1.05); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #333; position: relative; transition: 0.3s; }
+        .card:hover { border-color: #007bff; }
+        .fav-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #555; }
+        .fav-btn.active { color: #ffca28; }
+        .btn-group { display: flex; gap: 8px; margin-top: 15px; }
+        button { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .play-btn { background: #007bff; color: white; }
+        .pop-btn { background: #28a745; color: white; }
+        #player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; display: none; flex-direction: column; z-index: 1000; }
+        #player.active { display: flex; }
+        iframe { flex-grow: 1; border: none; }
+        .close { padding: 15px; background: #ff4444; color: white; border: none; cursor: pointer; }
+        footer { text-align: center; padding: 20px; color: #444; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Game Portal</h1>
+        <div class="search-row">
+            <input type="text" id="game-search" placeholder="Search games...">
+            <button id="random-btn">RANDOM</button>
+        </div>
+    </header>
+
+    <div id="game-grid" class="grid"></div>
+
+    <div id="player">
+        <button class="close" id="close-btn">← BACK TO MENU</button>
+        <iframe id="game-frame" src=""></iframe>
+    </div>
+
+    <footer>Press <strong>F2</strong> to exit quickly.</footer>
+
+    <script>
+        const grid = document.getElementById('game-grid');
+        const player = document.getElementById('player');
+        const frame = document.getElementById('game-frame');
+        const closeBtn = document.getElementById('close-btn');
+        const searchInput = document.getElementById('game-search');
+        const randomBtn = document.getElementById('random-btn');
+
+        let allGames = [];
+        let favorites = JSON.parse(localStorage.getItem('favGames')) || [];
+
+        function openGame(url) {
+            frame.src = url;
+            player.classList.add('active');
+        }
+
+        function popOut(url) {
+            const newWin = window.open('about:blank', '_blank');
+            if (newWin) {
+                newWin.document.body.style.margin = "0";
+                newWin.document.body.innerHTML = `<iframe src="${url}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;overflow:hidden;" allowfullscreen></iframe>`;
+            }
+        }
+
+        function renderGames(gamesList) {
+            grid.innerHTML = '';
+            const sortedList = [...gamesList].sort((a, b) => favorites.includes(b.title) - favorites.includes(a.title));
+
+            sortedList.forEach(game => {
+                const isFav = favorites.includes(game.title);
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <button class="fav-btn ${isFav ? 'active' : ''}">★</button>
+                    <h3>${game.title}</h3>
+                    <div class="btn-group">
+                        <button class="play-btn">PLAY</button>
+                        <button class="pop-btn">POP</button>
+                    </div>
+                `;
+                card.querySelector('.fav-btn').onclick = () => {
+                    if (favorites.includes(game.title)) favorites = favorites.filter(t => t !== game.title);
+                    else favorites.push(game.title);
+                    localStorage.setItem('favGames', JSON.stringify(favorites));
+                    renderGames(allGames.filter(g => g.title.toLowerCase().includes(searchInput.value.toLowerCase())));
+                };
+                card.querySelector('.play-btn').onclick = () => openGame(game.url);
+                card.querySelector('.pop-btn').onclick = () => popOut(game.url);
+                grid.appendChild(card);
+            });
+        }
+
+        async function init() {
+            try {
+                const response = await fetch('games.json');
+                allGames = await response.json();
+                renderGames(allGames);
+                randomBtn.onclick = () => {
+                    const randomGame = allGames[Math.floor(Math.random() * allGames.length)];
+                    openGame(randomGame.url);
+                };
+            } catch (err) { console.error("Load error:", err); }
+        }
+
+        searchInput.oninput = () => {
+            const filtered = allGames.filter(g => g.title.toLowerCase().includes(searchInput.value.toLowerCase()));
+            renderGames(filtered);
+        };
+
+        closeBtn.onclick = () => { player.classList.remove('active'); frame.src = ""; };
+        window.onkeydown = (e) => { if (e.key === "F2") { frame.src = ""; window.location.href = "https://www.google.com"; } };
+
+        init();
+    </script>
+</body>
+</html>

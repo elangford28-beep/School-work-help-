@@ -1,0 +1,11 @@
+JSON
+[
+  {
+    "title": "Example Game 1",
+    "url": "https://www.game-iframe-url.com"
+  },
+  {
+    "title": "Example Game 2",
+    "url": "https://www.another-game-link.com"
+  }
+]

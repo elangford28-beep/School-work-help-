@@ -6,20 +6,28 @@
     <title>Game Portal</title>
     <style>
         body { background: #121212; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
-        header { text-align: center; padding: 30px 20px; background: #1a1a1a; }
-        .search-row { display: flex; justify-content: center; gap: 10px; margin: 15px auto; max-width: 500px; padding: 0 20px; }
+        header { text-align: center; padding: 20px; background: #1a1a1a; }
+        
+        /* Search & Random Row */
+        .search-row { display: flex; justify-content: center; gap: 10px; margin: 15px auto; max-width: 600px; padding: 0 20px; }
         #game-search { flex-grow: 1; padding: 12px; border-radius: 25px; border: 1px solid #444; background: #222; color: white; outline: none; font-size: 16px; }
         #random-btn { background: #6f42c1; color: white; border: none; border-radius: 25px; padding: 0 20px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        #random-btn:hover { background: #5a32a3; transform: scale(1.05); }
+        
+        /* Category Bar */
+        .category-bar { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; padding: 0 20px; }
+        .cat-btn { background: #333; color: #ccc; border: 1px solid #444; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        .cat-btn.active { background: #007bff; color: white; border-color: #007bff; }
+
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
         .card { background: #1e1e1e; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #333; position: relative; transition: 0.3s; }
-        .card:hover { border-color: #007bff; }
         .fav-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #555; }
         .fav-btn.active { color: #ffca28; }
+        
         .btn-group { display: flex; gap: 8px; margin-top: 15px; }
         button { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .play-btn { background: #007bff; color: white; }
         .pop-btn { background: #28a745; color: white; }
+
         #player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; display: none; flex-direction: column; z-index: 1000; }
         #player.active { display: flex; }
         iframe { flex-grow: 1; border: none; }
@@ -34,6 +42,9 @@
         <div class="search-row">
             <input type="text" id="game-search" placeholder="Search games...">
             <button id="random-btn">RANDOM</button>
+        </div>
+        <div id="category-bar" class="category-bar">
+            <button class="cat-btn active" data-cat="All">All</button>
         </div>
     </header>
 
@@ -53,9 +64,11 @@
         const closeBtn = document.getElementById('close-btn');
         const searchInput = document.getElementById('game-search');
         const randomBtn = document.getElementById('random-btn');
+        const catBar = document.getElementById('category-bar');
 
         let allGames = [];
         let favorites = JSON.parse(localStorage.getItem('favGames')) || [];
+        let currentCategory = "All";
 
         function openGame(url) {
             frame.src = url;
@@ -70,17 +83,28 @@
             }
         }
 
-        function renderGames(gamesList) {
+        function renderGames() {
             grid.innerHTML = '';
-            const sortedList = [...gamesList].sort((a, b) => favorites.includes(b.title) - favorites.includes(a.title));
+            const term = searchInput.value.toLowerCase();
+            
+            // Filter by category AND search term
+            let filtered = allGames.filter(g => {
+                const matchesSearch = g.title.toLowerCase().includes(term);
+                const matchesCat = currentCategory === "All" || g.category === currentCategory;
+                return matchesSearch && matchesCat;
+            });
 
-            sortedList.forEach(game => {
+            // Sort by Favorites
+            filtered.sort((a, b) => favorites.includes(b.title) - favorites.includes(a.title));
+
+            filtered.forEach(game => {
                 const isFav = favorites.includes(game.title);
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
                     <button class="fav-btn ${isFav ? 'active' : ''}">★</button>
                     <h3>${game.title}</h3>
+                    <p style="font-size:12px; color:#777;">${game.category || 'General'}</p>
                     <div class="btn-group">
                         <button class="play-btn">PLAY</button>
                         <button class="pop-btn">POP</button>
@@ -90,7 +114,7 @@
                     if (favorites.includes(game.title)) favorites = favorites.filter(t => t !== game.title);
                     else favorites.push(game.title);
                     localStorage.setItem('favGames', JSON.stringify(favorites));
-                    renderGames(allGames.filter(g => g.title.toLowerCase().includes(searchInput.value.toLowerCase())));
+                    renderGames();
                 };
                 card.querySelector('.play-btn').onclick = () => openGame(game.url);
                 card.querySelector('.pop-btn').onclick = () => popOut(game.url);
@@ -98,11 +122,30 @@
             });
         }
 
+        function setupCategories() {
+            const categories = ["All", ...new Set(allGames.map(g => g.category).filter(Boolean))];
+            catBar.innerHTML = '';
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `cat-btn ${cat === currentCategory ? 'active' : ''}`;
+                btn.textContent = cat;
+                btn.onclick = () => {
+                    currentCategory = cat;
+                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderGames();
+                };
+                catBar.appendChild(btn);
+            });
+        }
+
         async function init() {
             try {
                 const response = await fetch('games.json');
                 allGames = await response.json();
-                renderGames(allGames);
+                setupCategories();
+                renderGames();
+                
                 randomBtn.onclick = () => {
                     const randomGame = allGames[Math.floor(Math.random() * allGames.length)];
                     openGame(randomGame.url);
@@ -110,11 +153,7 @@
             } catch (err) { console.error("Load error:", err); }
         }
 
-        searchInput.oninput = () => {
-            const filtered = allGames.filter(g => g.title.toLowerCase().includes(searchInput.value.toLowerCase()));
-            renderGames(filtered);
-        };
-
+        searchInput.oninput = () => renderGames();
         closeBtn.onclick = () => { player.classList.remove('active'); frame.src = ""; };
         window.onkeydown = (e) => { if (e.key === "F2") { frame.src = ""; window.location.href = "https://www.google.com"; } };
 
@@ -122,24 +161,3 @@
     </script>
 </body>
 </html>
-{
-    "title": "2048",
-    "url": "https://play2048.co/"
-  },
-  {
-    "title": "Flappy Bird (Clone)",
-    "url": "https://wayou.github.io/FlappyBird/"
-  },
-  {
-    "title": "Hextris",
-    "url": "https://hextris.io/"
-  },
-  {
-    "title": "Minecraft Classic",
-    "url": "https://classic.minecraft.net/"
-  },
-  {
-    "title": "Space Invaders",
-    "url": "https://freeinvaders.org/"
-  }
-]

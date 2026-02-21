@@ -1,4 +1,3 @@
-JSON
 [
   {
     "title": "2048",
@@ -67,33 +66,4 @@ JSON
     "image": "https://vignette.wikia.nocookie.net/vex-game/images/5/5e/Vex_7_Icon.png"
   },
   {
-    "title": "Basketball Stars",
-    "url": "https://basketballstars.github.io/",
-    "category": "2 Player",
-    "image": "https://basketballstars.github.io/images/logo.png"
-  },
-  {
-    "title": "Madalin Stunt Cars 2",
-    "url": "https://webglmath.github.io/madalin-stunt-cars-2/",
-    "category": "Driving",
-    "image": "https://webglmath.github.io/madalin-stunt-cars-2/logo.png"
-  },
-  {
-    "title": "Drive Mad",
-    "url": "https://drivemad.github.io/",
-    "category": "Driving",
-    "image": "https://drivemad.github.io/logo.png"
-  },
-  {
-    "title": "Hill Climb Racing",
-    "url": "https://hillclimbracing.github.io/",
-    "category": "Driving",
-    "image": "https://hillclimbracing.github.io/images/logo.png"
-  },
-  {
-    "title": "Getaway Shootout",
-    "url": "https://getawayshootout.github.io/",
-    "category": "2 Player",
-    "image": "https://getawayshootout.github.io/images/logo.png"
-  }
-]
+    

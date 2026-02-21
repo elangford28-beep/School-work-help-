@@ -13,22 +13,87 @@ JSON
     "image": "https://vignette.wikia.nocookie.net/flappybird/images/d/d4/Icon.png"
   },
   {
-    "title": "Hextris",
-    "url": "https://hextris.io/",
-    "category": "Puzzle",
-    "image": "https://hextris.io/images/icon.png"
-  },
-  {
-    "title": "Minecraft Classic",
-    "url": "https://classic.minecraft.net/",
-    "category": "Adventure",
-    "image": "https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/apple-icon-120x120.png"
-  },
-  JSON
-  {
     "title": "Where's My Pizza?",
     "url": "https://pizzajs.github.io/",
     "category": "Action",
-    "image": "https://play-lh.googleusercontent.com/vH9jI8vN6V6M3Z8hI6Fm8W5p4S1GvS5X_m8R6p6j_G9H6K7L7j_I6p6O6V6M3Z8hI6Fm"
+    "image": "https://raw.githubusercontent.com/pizzajs/pizzajs.github.io/main/favicon.ico"
+  },
+  {
+    "title": "DuckCraft",
+    "url": "https://freezenova.com/duckcraft/",
+    "category": "Adventure",
+    "image": "https://freezenova.com/wp-content/uploads/2021/01/duckcraft.jpg"
+  },
+  {
+    "title": "Run 3",
+    "url": "https://kdata1.com/2020/05/run-3/",
+    "category": "Action",
+    "image": "https://edumedia-sciences.com/media/thumbnail/885-en-6.jpg"
+  },
+  {
+    "title": "Drift Hunters",
+    "url": "https://drifthunters.github.io/",
+    "category": "Driving",
+    "image": "https://drifthunters.github.io/img/drift-hunters.png"
+  },
+  {
+    "title": "FNAF",
+    "url": "https://fnaf.github.io/",
+    "category": "Horror",
+    "image": "https://fnaf.github.io/images/fnaf-1.png"
+  },
+  {
+    "title": "Snow Rider 3D",
+    "url": "https://snow-rider3d.github.io/",
+    "category": "Driving",
+    "image": "https://snow-rider3d.github.io/img/snow-rider-3d.png"
+  },
+  {
+    "title": "Rogue Soul 2",
+    "url": "https://kdata1.com/2016/04/rogue-soul-2/",
+    "category": "Action",
+    "image": "https://raw.githubusercontent.com/pizzajs/pizzajs.github.io/main/favicon.ico"
+  },
+  {
+    "title": "Retro Bowl",
+    "url": "https://game316022.github.io/g7/",
+    "category": "Sports",
+    "image": "https://raw.githubusercontent.com/game316022/g7/main/icon.png"
+  },
+  {
+    "title": "Vex 7",
+    "url": "https://vex7.io/",
+    "category": "Action",
+    "image": "https://vignette.wikia.nocookie.net/vex-game/images/5/5e/Vex_7_Icon.png"
+  },
+  {
+    "title": "Basketball Stars",
+    "url": "https://basketballstars.github.io/",
+    "category": "2 Player",
+    "image": "https://basketballstars.github.io/images/logo.png"
+  },
+  {
+    "title": "Madalin Stunt Cars 2",
+    "url": "https://webglmath.github.io/madalin-stunt-cars-2/",
+    "category": "Driving",
+    "image": "https://webglmath.github.io/madalin-stunt-cars-2/logo.png"
+  },
+  {
+    "title": "Drive Mad",
+    "url": "https://drivemad.github.io/",
+    "category": "Driving",
+    "image": "https://drivemad.github.io/logo.png"
+  },
+  {
+    "title": "Hill Climb Racing",
+    "url": "https://hillclimbracing.github.io/",
+    "category": "Driving",
+    "image": "https://hillclimbracing.github.io/images/logo.png"
+  },
+  {
+    "title": "Getaway Shootout",
+    "url": "https://getawayshootout.github.io/",
+    "category": "2 Player",
+    "image": "https://getawayshootout.github.io/images/logo.png"
   }
 ]

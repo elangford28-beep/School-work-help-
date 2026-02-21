@@ -23,5 +23,12 @@ JSON
     "url": "https://classic.minecraft.net/",
     "category": "Adventure",
     "image": "https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/apple-icon-120x120.png"
+  },
+  JSON
+  {
+    "title": "Where's My Pizza?",
+    "url": "https://pizzajs.github.io/",
+    "category": "Action",
+    "image": "https://play-lh.googleusercontent.com/vH9jI8vN6V6M3Z8hI6Fm8W5p4S1GvS5X_m8R6p6j_G9H6K7L7j_I6p6O6V6M3Z8hI6Fm"
   }
 ]

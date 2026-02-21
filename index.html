@@ -1,32 +1,64 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html>
 <head>
-    <title>Test Portal</title>
+    <title>My Drive - Google Drive</title>
     <style>
-        body { background: #121212; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
-        .box { background: #1e1e1e; padding: 20px; border-radius: 10px; display: inline-block; border: 1px solid #333; }
-        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        body { background: #121212; color: white; font-family: sans-serif; margin: 0; text-align: center; }
+        header { padding: 20px; background: #1a1a1a; border-bottom: 1px solid #333; }
+        .cat-bar { margin: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .cat-btn { background: #333; color: white; border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 20px; }
+        .card { background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 10px; }
+        .card img { width: 100%; border-radius: 5px; }
+        button.play { background: #007bff; color: white; border: none; width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; cursor: pointer; }
+        #player { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index: 100; }
+        iframe { width:100%; height:100%; border:none; }
     </style>
 </head>
 <body>
 
-    <h1>RESOURCE PORTAL TEST</h1>
-    <div class="box">
-        <h3>Retro Bowl</h3>
-        <p>If you see this, the code is working!</p>
-        <button onclick="openGame()">PLAY NOW</button>
-    </div>
+<header>
+    <h1>RESOURCE PORTAL</h1>
+    <div class="cat-bar" id="cats"></div>
+</header>
 
-    <div id="player" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black;">
-        <button onclick="location.reload()" style="position:absolute; top:10px; right:10px; background:red;">EXIT</button>
-        <iframe id="frame" src="" style="width:100%; height:100%; border:none;"></iframe>
-    </div>
+<div class="grid" id="game-grid"></div>
 
-    <script>
-        function openGame() {
-            document.getElementById('frame').src = "https://game316022.github.io/g7/";
-            document.getElementById('player').style.display = "block";
-        }
-    </script>
+<div id="player">
+    <button onclick="location.reload()" style="position:absolute; top:10px; right:10px; z-index:101; background:red; color:white;">EXIT</button>
+    <iframe id="frame"></iframe>
+</div>
+
+<script>
+    const games = [
+        { "t": "Retro Bowl", "u": "https://game316022.github.io/g7/", "c": "Sports" },
+        { "t": "Drift Hunters", "u": "https://drifthunters.github.io/", "c": "Driving" },
+        { "t": "Drive Mad", "u": "https://drivemad.github.io/", "c": "Driving" },
+        { "t": "Basketball Stars", "u": "https://basketballstars.github.io/", "c": "2 Player" },
+        { "t": "Getaway Shootout", "u": "https://getawayshootout.github.io/", "c": "2 Player" },
+        { "t": "Run 3", "u": "https://kdata1.com/2020/05/run-3/", "c": "Action" },
+        { "t": "Vex 7", "u": "https://vex7.io/", "c": "Action" }
+    ];
+
+    function show(cat) {
+        const grid = document.getElementById('game-grid');
+        grid.innerHTML = games.filter(g => cat === 'All' || g.c === cat).map(g => `
+            <div class="card">
+                <h3>${g.t}</h3>
+                <button class="play" onclick="play('${g.u}')">PLAY</button>
+            </div>
+        `).join('');
+    }
+
+    function play(url) {
+        document.getElementById('frame').src = url;
+        document.getElementById('player').style.display = 'block';
+    }
+
+    const categories = ['All', ...new Set(games.map(g => g.c))];
+    document.getElementById('cats').innerHTML = categories.map(c => `<button class="cat-btn" onclick="show('${c}')">${c}</button>`).join('');
+    
+    show('All');
+</script>
 </body>
 </html>

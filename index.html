@@ -1,147 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Drive - Google Drive</title>
     <style>
-        body { background: #121212; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; overflow-x: hidden; }
-        header { padding: 20px; background: #1a1a1a; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 1000; }
-        .search-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px auto; max-width: 600px; padding: 0 20px; }
-        #search { flex-grow: 1; padding: 12px 20px; border-radius: 25px; border: 1px solid #444; background: #222; color: white; outline: none; }
-        .settings-btn { background: #333; border: none; color: white; cursor: pointer; padding: 10px; border-radius: 50%; font-size: 18px; }
-        .cat-bar { margin: 10px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .cat-btn { background: #333; color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 11px; }
+        body { background: #121212; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; overflow: hidden; touch-action: manipulation; }
+        header { padding: 15px; background: #1a1a1a; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 1000; }
+        
+        .search-row { display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto; padding: 0 15px; }
+        #search { flex-grow: 1; padding: 10px 18px; border-radius: 20px; border: 1px solid #444; background: #222; color: white; outline: none; font-size: 16px; }
+        .settings-btn { background: #333; border: none; cursor: pointer; padding: 8px; border-radius: 50%; font-size: 18px; }
+        
+        .cat-bar { margin: 10px 0; display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+        .cat-btn { background: #333; color: white; border: none; padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 11px; font-weight: bold; }
         .cat-btn.active { background: #007bff; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 20px; max-width: 1300px; margin: 0 auto; }
-        .card { background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 12px; position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: 110px; }
-        .card h3 { margin: 5px 0; font-size: 13px; height: 35px; overflow: hidden; display: flex; align-items: center; justify-content: center; padding-right: 20px; pointer-events: none; }
-        .fav-star { position: absolute; top: 8px; right: 8px; cursor: pointer; color: #555; font-size: 18px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding: 15px; max-width: 1200px; margin: 0 auto; }
+        .card { background: #1e1e1e; border: 1px solid #333; border-radius: 8px; padding: 10px; position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: 110px; }
+        .card h3 { margin: 0 0 10px 0; font-size: 12px; height: 32px; overflow: hidden; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+        
+        .fav-star { position: absolute; top: 5px; right: 5px; cursor: pointer; color: #444; font-size: 20px; z-index: 5; }
         .fav-star.active { color: #ffca28; }
-        button.play { background: #007bff; color: white; border: none; width: 100%; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        button.play-btn { background: #007bff; color: white; border: none; width: 100%; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
         #player { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index: 9999; }
-        iframe { width:100%; height:100%; border:none; background: white; }
-        .controls { position:absolute; top:10px; right:10px; z-index: 10000; display:flex; gap:8px; }
-        .ctrl-btn { color:white; border:none; padding:8px 12px; border-radius: 5px; cursor:pointer; font-weight:bold; font-size: 11px; }
-        .panic-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #34a853; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10001; border: 2px solid #fff; }
-        .panic-btn img { width: 25px; }
+        #loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 9998; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        iframe { width:100%; height:100%; border:none; background: #000; position: relative; z-index: 9997; }
+        
+        /* Panic Button - Stealth Positioned */
+        .panic-btn { 
+            position: fixed; 
+            bottom: -5px; 
+            right: -5px; 
+            width: 35px; 
+            height: 35px; 
+            background: rgba(255, 255, 255, 0.01); 
+            border-radius: 50%; 
+            cursor: pointer; 
+            z-index: 10001; 
+        }
+
+        .controls { position:absolute; top:5px; left:5px; z-index: 10000; }
+        .exit-btn { color:rgba(255,255,255,0.2); background:none; border:none; padding:10px; cursor:pointer; font-size: 10px; font-weight: bold; }
     </style>
 </head>
-<body>
+<body onkeydown="checkKey(event)">
 
 <header>
-    <h2 style="margin:0; font-size: 18px;">RESOURCE PORTAL</h2>
     <div class="search-row">
-        <input type="text" id="search" placeholder="Search verified games..." oninput="render()">
-        <button class="settings-btn" onclick="changePanicKey()" title="Change Panic Key">⚙️</button>
+        <input type="text" id="search" placeholder="Search..." oninput="render()">
+        <button class="settings-btn" onclick="changePanicKey()">⚙️</button>
     </div>
     <div class="cat-bar" id="cats"></div>
 </header>
 
 <div class="grid" id="game-grid"></div>
 
-<div class="panic-btn" onclick="panic()"><img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg"></div>
+<div class="panic-btn" onclick="panic()"></div>
 
 <div id="player">
+    <div id="loader"><div class="spinner"></div><p>Loading...</p></div>
     <div class="controls">
-        <button class="ctrl-btn" style="background:#28a745;" onclick="toggleFS()">FULLSCREEN</button>
-        <button class="ctrl-btn" style="background:#ff4444;" onclick="closeGame()">EXIT</button>
+        <button class="exit-btn" onclick="closeGame()">[ EXIT ]</button>
     </div>
-    <iframe id="frame" src=""></iframe>
+    <iframe id="frame" src="about:blank" onload="onFrameLoad()"></iframe>
 </div>
 
 <script>
     const games = [
         { "t": "Where's My Pizza?", "u": "https://pizzajs.github.io/", "c": "Action" },
-        { "t": "Slope", "u": "https://kdata1.com/2020/05/slope/", "c": "Action" },
-        { "t": "Tunnel Rush", "u": "https://v6p9d9t4.ssl.hwcdn.net/html5/74000/74241/index.html", "c": "Action" },
-        { "t": "Run 3", "u": "https://kdata1.com/2020/05/run-3/", "c": "Action" },
-        { "t": "Geometry Dash", "u": "https://geometry-dash.github.io/", "c": "Action" },
-        { "t": "Vex 7", "u": "https://vex7.io/", "c": "Action" },
-        { "t": "Stickman Hook", "u": "https://games.poki.com/450/stickman-hook/index.html", "c": "Action" },
-        { "t": "Tomb Mask", "u": "https://tomb-of-the-mask.github.io/", "c": "Action" },
-        { "t": "Drift Hunters", "u": "https://drifthunters.github.io/", "c": "Driving" },
-        { "t": "Drift Boss", "u": "https://driftboss.github.io/", "c": "Driving" },
-        { "t": "Madalin Stunt Cars 2", "u": "https://webglmath.github.io/madalin-stunt-cars-2/", "c": "Driving" },
-        { "t": "Drive Mad", "u": "https://drivemad.github.io/", "c": "Driving" },
-        { "t": "Moto X3M", "u": "https://games.poki.com/450/motox3m/index.html", "c": "Driving" },
-        { "t": "Eggy Car", "u": "https://eggycar.github.io/", "c": "Driving" },
+        { "t": "DuckCraft", "u": "https://freezenova.com/duckcraft/", "c": "Adventure" },
+        { "t": "99 Nights in Forest", "u": "https://99nights.github.io/", "c": "Action" },
         { "t": "Snow Rider 3D", "u": "https://snowrider3d.github.io/", "c": "Driving" },
-        { "t": "Basketball Stars", "u": "https://v6p9d9t4.ssl.hwcdn.net/html5/144000/144410/index.html", "c": "2 Player" },
-        { "t": "Getaway Shootout", "u": "https://getawayshootout.github.io/", "c": "2 Player" },
-        { "t": "Boxing Random", "u": "https://boxing-random.github.io/", "c": "2 Player" },
-        { "t": "Soccer Random", "u": "https://soccer-random.github.io/", "c": "2 Player" },
+        { "t": "Drift Boss", "u": "https://driftboss.github.io/", "c": "Driving" },
+        { "t": "FNAF 2", "u": "https://fnaf2.github.io/", "c": "Horror" },
+        { "t": "Slope", "u": "https://kdata1.com/2020/05/slope/", "c": "Action" },
+        { "t": "Geometry Dash", "u": "https://geometry-dash.github.io/", "c": "Action" },
         { "t": "Retro Bowl", "u": "https://game316022.github.io/g7/", "c": "Sports" },
-        { "t": "FNAF 1", "u": "https://fnaf.github.io/", "c": "Action" },
-        { "t": "Doodle Jump", "u": "https://doodle-jump.github.io/", "c": "Action" },
-        { "t": "Cookie Clicker", "u": "https://orteil.dashnet.org/cookieclicker/", "c": "Simulation" },
-        { "t": "Pac-Man", "u": "https://pacman.github.io/", "c": "Classic" }
+        { "t": "Cookie Clicker", "u": "https://orteil.dashnet.org/cookieclicker/", "c": "Simulation" }
     ];
 
     let currentFilter = 'All';
     let favorites = JSON.parse(localStorage.getItem('favGames')) || [];
     let panicKey = localStorage.getItem('panicKey') || 'p';
 
-    function panic() { window.location.href = 'https://classroom.google.com'; }
-    
-    window.addEventListener('keydown', (e) => { 
-        if (e.key.toLowerCase() === panicKey.toLowerCase()) panic(); 
-    });
+    function panic() { window.location.replace('https://classroom.google.com'); }
+    function checkKey(e) { if (e.key.toLowerCase() === panicKey.toLowerCase()) panic(); }
 
-    function changePanicKey() {
-        const newKey = prompt("Enter a new key for the Panic Shortcut (currently: " + panicKey + "):");
-        if (newKey && newKey.length === 1) {
-            panicKey = newKey;
-            localStorage.setItem('panicKey', newKey);
-            alert("Panic key changed to: " + newKey);
-        } else if (newKey) {
-            alert("Please enter a single character.");
-        }
+    // Permanent Triple-Finger Tap
+    window.addEventListener('touchstart', (e) => { if (e.touches.length >= 3) panic(); });
+
+    function onFrameLoad() {
+        document.getElementById('loader').style.display = 'none';
+        window.focus();
     }
 
-    function toggleFav(title) {
-        if (favorites.includes(title)) {
-            favorites = favorites.filter(f => f !== title);
-        } else {
-            favorites.push(title);
-        }
-        localStorage.setItem('favGames', JSON.stringify(favorites));
-        render();
+    function play(url) { 
+        document.getElementById('loader').style.display = 'block';
+        document.getElementById('frame').src = url; 
+        document.getElementById('player').style.display = 'block'; 
+        setTimeout(() => window.focus(), 500);
+    }
+
+    function closeGame() { 
+        document.getElementById('player').style.display = 'none'; 
+        document.getElementById('frame').src = 'about:blank'; 
     }
 
     function render() {
         const grid = document.getElementById('game-grid');
-        const searchTerm = document.getElementById('search').value.toLowerCase();
-        
-        let filtered = games.filter(g => {
-            const matchesSearch = g.t.toLowerCase().includes(searchTerm);
-            if (currentFilter === 'Favorites') return favorites.includes(g.t) && matchesSearch;
-            return (currentFilter === 'All' || g.c === currentFilter) && matchesSearch;
+        const search = document.getElementById('search').value.toLowerCase();
+        const filtered = games.filter(g => {
+            const match = g.t.toLowerCase().includes(search);
+            return (currentFilter === 'Favorites' ? favorites.includes(g.t) : (currentFilter === 'All' || g.c === currentFilter)) && match;
         });
 
         grid.innerHTML = filtered.map(g => `
             <div class="card">
-                <span class="fav-star ${favorites.includes(g.t) ? 'active' : ''}" onclick="toggleFav('${g.t}')">★</span>
+                <span class="fav-star ${favorites.includes(g.t) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav('${g.t}')">★</span>
                 <h3>${g.t}</h3>
-                <button class="play" onclick="play('${g.u}')">PLAY</button>
+                <button class="play-btn" onclick="play('${g.u}')">PLAY</button>
             </div>
         `).join('');
-        
-        const categories = ['All', 'Favorites', ...new Set(games.map(g => g.c))];
-        document.getElementById('cats').innerHTML = categories.map(c => `
-            <button class="cat-btn ${c === currentFilter ? 'active' : ''}" onclick="filter('${c}')">${c}</button>
-        `).join('');
+
+        const cats = ['All', 'Favorites', ...new Set(games.map(g => g.c))];
+        document.getElementById('cats').innerHTML = cats.map(c => `<button class="cat-btn ${c === currentFilter ? 'active' : ''}" onclick="currentFilter='${c}';render()">${c}</button>`).join('');
     }
 
-    window.filter = (c) => { currentFilter = c; render(); };
-    window.play = (url) => { document.getElementById('frame').src = url; document.getElementById('player').style.display = 'block'; };
-    window.closeGame = () => { document.getElementById('player').style.display = 'none'; document.getElementById('frame').src = ''; };
-    window.toggleFS = () => { 
-        const elem = document.getElementById("frame"); 
-        if (elem.requestFullscreen) elem.requestFullscreen(); 
-        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen(); 
-    };
+    function toggleFav(title) {
+        favorites.includes(title) ? favorites = favorites.filter(f => f !== title) : favorites.push(title);
+        localStorage.setItem('favGames', JSON.stringify(favorites));
+        render();
+    }
+
+    function changePanicKey() {
+        const newKey = prompt("New Panic Key:", panicKey);
+        if (newKey && newKey.length === 1) {
+            panicKey = newKey;
+            localStorage.setItem('panicKey', newKey);
+        }
+    }
 
     render();
 </script>
 </body>
-</html>'/;/
+</html>
